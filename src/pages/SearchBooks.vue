@@ -1,73 +1,57 @@
 <template>
   <div class="container py-4">
-    <!-- Search box -->
     <div class="form-group">
-      <input v-model="query" @keyup.enter="fetchBooks(0)" class="form-control" placeholder="Search books..." />
+      <input v-model="query" @keyup.enter="getBookList(0)" class="form-control" placeholder="Search books..." />
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <button @click="getBookList(0)" class="btn btn-primary">Search</button>
+      </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <button @click="fetchBooks(0)" class="btn btn-primary">Search</button>
+    <div class="row">
+      <div class="col-md-3 mb-3 col-sm-4" v-for="book in books" :key="book.id">
+        <BookCard :book="book" :isBookmarked="isBookmarked" :toggleBookmark="toggleBookmark" />
+      </div>
+    </div>
 
-      <div class="form-inline">
-        <label class="mr-2">Books per page:</label>
-        <select v-model.number="maxResults" class="form-control" @change="fetchBooks(0)">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-3">
+      <div class="d-flex align-items-center gap-2">
+        <label for="maxResults" class="mb-0 fw-semibold" style="font-family: 'Poppins';">Books per page:</label>
+        <select v-model.number="maxResults" id="maxResults" class="form-select w-auto" @change="onMaxResultsChange">
           <option :value="4">4</option>
           <option :value="8">8</option>
           <option :value="12">12</option>
         </select>
       </div>
-    </div>
 
-    <!-- Books Grid -->
-    <div class="row">
-      <div class="col-md-3 mb-3" v-for="book in books" :key="book.id">
-        <!-- <div class="h-100"> -->
-        <div class="card-body" v-if="book.volumeInfo">
-          <div class="image-box" v-if="book.volumeInfo.imageLinks.thumbnail">
-            <img :src="book.volumeInfo.imageLinks.thumbnail" class="images" alt="Dynamic Image" />
-          </div>
-
-          <h5 class="card-title">{{ book.volumeInfo.title }}</h5>
-          <p class="card-text" v-if="book.volumeInfo.authors">
-            By {{ book.volumeInfo.authors.join(', ') }}
-          </p>
-          <p v-else class="card-text"></p>
-
-          <!--pass data here to individual page-->
-
-        </div>
-        <div class="card-footer">
-          <!-- <a :href="book.volumeInfo.infoLink" target="_blank" class="btn btn-sm btn-outline-primary">
-            View
-          </a> -->
-
-          <router-link :to="`/books/${book.volumeInfo.title}/${book.id}`" class="btn btn-sm btn-outline-primary">
-            View
-          </router-link>
-        </div>
-        <!-- </div> -->
+      <div class="d-flex align-items-center gap-3">
+        <button @click="prevPage" class="btn btn-outline-secondary" :disabled="startIndex === 0">
+          <i class="bi bi-chevron-left"></i>Prev
+        </button>
+        <span class="fw-semibold">
+          {{ currentPage }} / {{ totalPages }}
+        </span>
+        <button @click="nextPage" class="btn btn-outline-secondary" :disabled="startIndex + maxResults >= totalItems">
+          Next<i class="bi bi-chevron-right"></i>
+        </button>
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-      <button @click="prevPage" class="btn btn-secondary" :disabled="startIndex === 0">Prev</button>
-      <span>Page {{ currentPage }}</span>
-      <button @click="nextPage" class="btn btn-secondary" :disabled="startIndex + maxResults >= totalItems">
-        Next
-      </button>
-    </div>
-
-    <p v-if="error" class="text-danger mt-3">{{ error }}</p>
+    <p v-if="error" class="text-danger mt-3" style="font-family: 'Poppins';">{{ error }}</p>
   </div>
 </template>
 
 <script>
+import { getBookList } from '@/components/datastore/bookStore';
+import BookCard from '@/components/BookCard.vue';
+
 export default {
+  name: 'SearchBooks',
+  components: { BookCard },
   data() {
     return {
-      query: '', // default
+      query: '',
       books: [],
+      savedBooks: [],
       startIndex: 0,
       maxResults: 8,
       totalItems: 0,
@@ -78,106 +62,90 @@ export default {
     currentPage() {
       return Math.floor(this.startIndex / this.maxResults) + 1;
     },
+    totalPages() {
+      return Math.ceil(this.totalItems / this.maxResults);
+    },
   },
   methods: {
-    viewBooks() {
-      this.$router.push("/books/");
+    onMaxResultsChange() {
+      this.$nextTick(() => {
+        this.getBookList(0);
+      });
+    }
+    ,
+    toggleBookmark(book) {
+      const index = this.savedBooks.findIndex(saved => saved.id === book.id);
+      if (index !== -1) {
+        this.savedBooks.splice(index, 1);
+      } else {
+        this.savedBooks.push(book);
+      }
+      localStorage.setItem('savedBooks', JSON.stringify(this.savedBooks));
     },
-    fetchBooks(start = 0) {
-      const term = this.query.trim() || 'a';
-      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(term)}&startIndex=${start}&maxResults=${this.maxResults}`;
+    isBookmarked(book) {
+      return this.savedBooks.some(saved => saved.id === book.id);
+    },
 
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.items) {
-            this.books = data.items;
-            this.totalItems = data.totalItems;
-            this.startIndex = start;
-            this.error = '';
-          } else {
-            this.books = [];
-            this.totalItems = 0;
-            this.error = 'No results found.';
-          }
-        })
-        .catch(() => {
-          this.error = 'Error fetching books.';
-        });
+    loadBookmarks() {
+      const saved = localStorage.getItem('savedBooks');
+      if (saved) {
+        this.savedBooks = JSON.parse(saved);
+      }
     },
+    viewBooks() {
+      this.$router.push("/books");
+    },
+    async getBookList(start = 0) {
+      const token = this.authToken;
+      const term = this.query.trim() || 'a';
+
+      const result = await getBookList({
+        token,
+        query: term,
+        start,
+        maxResults: this.maxResults,
+      });
+
+      this.books = result.books;
+      this.totalItems = result.totalItems;
+      this.startIndex = start;
+      this.error = result.error;
+    },
+
     nextPage() {
       const nextIndex = this.startIndex + this.maxResults;
       if (nextIndex < this.totalItems) {
-        this.fetchBooks(nextIndex);
+        this.getBookList(nextIndex);
       }
     },
+
     prevPage() {
       const prevIndex = this.startIndex - this.maxResults;
       if (prevIndex >= 0) {
-        this.fetchBooks(prevIndex);
+        this.getBookList(prevIndex);
       }
-    },
+    }
   },
   mounted() {
-    this.fetchBooks(0);
+    this.getBookList(0);
   },
 };
 </script>
 
 <style scoped>
-.card-title {
-  width: 180px;
-  /* or any fixed width you need */
-
-  /* Multi-line ellipsis setup */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  /* number of lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1rem;
+.btn.btn-outline-secondary {
+  border-color: var(--orange);
+  color: var(--orange);
+  background-color: transparent;
   font-family: 'Poppins';
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  margin-top: 10px;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
-.card-body {
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  justify-items: center;
-}
-
-.card-footer {
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  justify-items: center;
-  align-content: center;
-  justify-self: center;
-}
-
-.image-box {
-
-  padding: 20px;
-  /* width: 150px; */
-  /* height: 200px; */
-  background-color: var(--lightsand);
-}
-
-.images {
-  align-items: center;
-  align-self: center;
-  width: 150px;
-  height: 200px;
-  border: 2px solid var(--orange)
-}
-
-.card-text {
-  height: 30px;
+.btn.btn-outline-secondary:hover {
+  background-color: var(--orange);
+  color: white;
 }
 </style>

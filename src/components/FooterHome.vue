@@ -1,32 +1,26 @@
 <template>
-    <div class="navi">
-        <h1 class="text-3xl font-bold">Welcome to the Art World!</h1>
-        <p>Footer trending and popular artwork here.</p>
+    <div class="footer">
+        <p>prosepeek © 2025</p>
     </div>
 </template>
 
 
 <script>
 export default {
-    name: 'HeaderHome',
+    name: 'headerHome',
 }
 </script>
 
 <style scoped>
-.navi {
-    /* padding: 16px 24px; */
-    height: 500px;
-    justify-items: center;
-    align-content: center;
+.footer {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
 }
 
-.button-new {
-    padding: 10px;
-    border: none;
-    color: var(--gray);
-}
-
-h1 {
+p {
     color: var(--orange);
     font-family: 'Poppins';
 }

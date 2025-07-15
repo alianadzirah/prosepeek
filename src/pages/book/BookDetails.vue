@@ -1,36 +1,57 @@
 <template>
-    <div class="container py-4">
-      <h2>Book Detail</h2>
-      <div v-if="book">
-        <h3>{{ book.volumeInfo.title }}</h3>
-        <p v-if="book.volumeInfo.authors">
-          <strong>Authors:</strong> {{ book.volumeInfo.authors.join(', ') }}
-        </p>
-        <p v-if="book.volumeInfo.description" v-html="book.volumeInfo.description"></p>
-        <a :href="book.volumeInfo.infoLink" target="_blank" class="btn btn-primary">More Info</a>
-      </div>
-      <p v-else>Loading...</p>
+    <div class="container py-4" style="margin-bottom: 100px;">
+        <span @click="viewBooks()" style="cursor: pointer; font-family: 'Poppins';">&#x2190; Back to list</span>
+        <div v-if="book">
+            <div class="col-lg-4 col-md-4 col-mb-6 col-sm-12" style="margin: 30px; justify-self: center;">
+                <img :src="book.volumeInfo.imageLinks.thumbnail" width="100%" alt="Dynamic Image" />
+            </div>
+
+            <h3>{{ book.volumeInfo.title }}</h3>
+            <p v-if="book.volumeInfo.authors">
+                <strong>Authors:</strong> {{ book.volumeInfo.authors.join(', ') }}
+            </p>
+            <p style="margin: 10px;" v-if="book.volumeInfo.description" v-html="book.volumeInfo.description"></p>
+            <MainButton :href="book.volumeInfo.infoLink" target="_blank" style="float: right;">More Info</MainButton>
+        </div>
+        <p v-else>Loading...</p>
     </div>
-  </template>
-  
-  <script>
-  export default {
+</template>
+
+<script>
+import { getBookDetail } from '@/components/datastore/bookStore';
+import MainButton from '@/components/button/MainButton.vue';
+
+export default {
+    name: 'BookDetails',
+    components: { MainButton },
     data() {
-      return {
-        book: null,
-      };
+        return {
+            book: null,
+            error: '',
+        };
     },
-    mounted() {
-      const id = this.$route.params.id;
-      fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          this.book = data;
-        })
-        .catch(() => {
-          this.book = null;
-        });
+    methods: {
+        viewBooks() {
+            this.$router.push("/books");
+        },
     },
-  };
-  </script>
-  
+    async mounted() {
+        const id = this.$route.params.id;
+
+        const { book, error } = await getBookDetail(id);
+
+        this.book = book;
+        this.error = error;
+
+        if (error) {
+            console.warn('Book detail error:', error);
+        }
+    }
+};
+</script>
+
+<style scoped>
+h3, p {
+    font-family: 'Poppins';
+}
+</style>

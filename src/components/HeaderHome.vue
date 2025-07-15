@@ -7,12 +7,12 @@
                     <h1 class="text-3xl font-bold">Welcome to Prosepeek!</h1>
                     <p style="color: var(--lightgray);">Browse trending and popular book here.</p>
                     <div class="row gap-3" style="margin-left: 1px">
-                        <MainButton @click="doSomething">Find Books</MainButton>
-                        <MainButton @click="doSomething">View Profile</MainButton>
+                        <MainButton @click="viewBooks()">Find Books &#x2192;</MainButton>
+                        <SubButton @click="goToReadList()">Read list</SubButton>
                     </div>
                 </div>
                 <div class="col">
-                    <img :src="require('@/assets/images/open-book.png')" alt="Vue logo" width="80%" />
+                    <img :src="require('@/assets/images/open-book.png')" alt="Prosepeek" width="80%" />
                 </div>
                 <div class="col-2"></div>
             </div>
@@ -22,11 +22,21 @@
 
 
 <script>
-import MainButton from './Button.vue'
+import MainButton from './button/MainButton.vue'
+import SubButton from './button/SubButton.vue'
 
 export default {
-    name: 'HeaderHome',
-    components: { MainButton }
+    name: 'headerHome',
+    components: { MainButton, SubButton },
+
+    methods: {
+        viewBooks() {
+            this.$router.push("/books");
+        },
+        goToReadList() {
+            this.$router.push("/signin");
+        },
+    }
 }
 </script>
 

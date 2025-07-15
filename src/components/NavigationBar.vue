@@ -1,19 +1,19 @@
 <template>
   <nav class="navi">
     <div class="container-fluid d-flex align-items-center justify-content-between">
-      <div class="navbar-logo">
-        hewo
-      </div>
+      <router-link to="/" exact-active-class="active"> <img :src="require('@/assets/images/open-book.png')"
+          alt="Vue logo" width="50" /> 
+      </router-link>
 
       <div class="navbar-links d-none d-md-flex gap-5"
         style="justify-items: center; justify-content: center; align-items: center; align-content: center;">
         <router-link to="/" exact-active-class="active" class="nav-link">Home</router-link>
-        <router-link to="/shop" active-class="active" class="nav-link">About</router-link>
         <router-link to="/books" active-class="active" class="nav-link">Book</router-link>
-        <router-link to="/contact" active-class="active" class="nav-link">Contact</router-link>
-        <button class="button-new">
-          Get Started
-        </button>
+        <a class="nav-link" href="mailto:aliaanadzirahh00@gmail.com?subject=Prosepeek%20Review" target="_blank"
+          rel="noopener noreferrer">
+          Contact
+        </a>
+        <MainButton @click="goToSignIn()">Get Started</MainButton>
       </div>
     </div>
   </nav>
@@ -21,8 +21,17 @@
 
 
 <script>
+import MainButton from './button/MainButton.vue';
+
 export default {
   name: 'NavigationBar',
+  components: { MainButton },
+
+  methods: {
+    goToSignIn() {
+      this.$router.push("/signin");
+    },
+  }
 }
 </script>
 
@@ -42,20 +51,5 @@ export default {
 .nav-link:hover {
   padding-bottom: 4px;
   border-bottom: 2px solid var(--orange);
-}
-
-.button-new {
-  background-color: var(--orange);
-  padding: 10px 20px;
-  border: none;
-  color: white;
-  font-family: 'Poppins';
-  border-radius: 3px;
-  font-size: 11px;
-}
-
-h1 {
-  color: var(--orange);
-  font-family: 'Poppins';
 }
 </style>
