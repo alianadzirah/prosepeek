@@ -11,7 +11,7 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    { path: '/', name: 'MenuPage', component: MenuPage },
+    { path: '/prosepeek', name: 'MenuPage', component: MenuPage },
     { path: '/books', name: 'SearchBooks', component: SearchBooks },
     { path: '/books/:name/:id', name: 'BookDetails', component: BookDetails, props: true },
     { path: '/newest', name: 'NewestBooks', component: NewestBooks },
