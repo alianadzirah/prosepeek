@@ -45,7 +45,7 @@ export default {
         },
     },
     mounted() {
-        this.username = sessionStorage.getItem('username')
+        this.username = sessionStorage.getItem('username') === null ? 'guest' : sessionStorage.getItem('username')
     }
 }
 </script>
