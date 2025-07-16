@@ -66,10 +66,10 @@ export default {
             sessionStorage.setItem('username', this.username === '' ? 'guest' : this.username)
             sessionStorage.setItem('password', this.password)
 
-            if (sessionStorage.getItem('username') === 'naddechan' && sessionStorage.getItem('password') === 'test123') {
+            if (sessionStorage.getItem('username').toLocaleLowerCase() === 'naddechan' && sessionStorage.getItem('password') === 'test123') {
                 this.errorMessage = '';
                 this.goToReadList();
-            } else if (sessionStorage.getItem('username') !== 'naddechan') {
+            } else if (sessionStorage.getItem('username').toLocaleLowerCase() !== 'naddechan') {
                 this.errorMessage = 'Username not exist';
                 setTimeout(() => {
                     this.errorMessage = '';

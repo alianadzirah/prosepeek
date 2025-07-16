@@ -28,7 +28,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     const username = sessionStorage.getItem('username');
-    if (username === 'naddechan') {
+    if (username.toLocaleLowerCase() === 'naddechan') {
       next();
     } else {
       next('/');

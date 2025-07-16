@@ -10,6 +10,9 @@
             <div class="col-md-3 mb-3 col-sm-4" v-for="book in books" :key="book.id">
                 <BookCard :book="book" :username="username" />
             </div>
+            <p v-if="books.length === 0">
+                no reading list yet...
+            </p>
         </div>
     </div>
 </template>

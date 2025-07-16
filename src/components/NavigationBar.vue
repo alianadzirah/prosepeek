@@ -18,7 +18,7 @@
       </div>
 
       <div v-if="username !== 'guest'" class="d-md-none">
-        <i class="fas fa-sign-out-alt" @click="signOut"
+        <i class="fas fa-sign-out-alt" @click="signOut()"
           style="font-size: 22px; color: var(--orange); cursor: pointer;"></i>
       </div>
     </div>
