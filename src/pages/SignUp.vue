@@ -9,33 +9,41 @@
 
             <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
                 <div class="sign-form p-4">
-                    <h2 class="text-center mb-4">Sign Up</h2>
-                    <div class="form-group position-relative mb-3">
-                        <i class="fas fa-user icon-input"></i>
-                        <input type="text" class="form-control pl-5" style="padding-left: 40px; font-family: 'Poppins';"
-                            placeholder="Username" v-model="username">
-                    </div>
+                    <form @submit.prevent="goHome">
+                        <h2 class="text-center mb-4">Sign Up</h2>
+                        <div class="form-group position-relative mb-3">
+                            <i class="fas fa-user icon-input"></i>
+                            <input type="text" class="form-control pl-5"
+                                style="padding-left: 40px; font-family: 'Poppins';" placeholder="Username"
+                                v-model="username">
+                        </div>
 
-                    <div class="form-group position-relative mb-3">
-                        <i class="fas fa-lock icon-input"></i>
-                        <input :type="showPassword ? 'text' : 'password'" class="form-control pl-5 pr-5"
-                            style="padding-left: 40px; font-family: 'Poppins';" placeholder="Password"
-                            v-model="password">
-                        <i class="fas toggle-password" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-                            @click="togglePassword"></i>
-                    </div>
+                        <div class="form-group position-relative mb-3">
+                            <i class="fas fa-lock icon-input"></i>
+                            <input :type="showPassword ? 'text' : 'password'" class="form-control pl-5 pr-5"
+                                style="padding-left: 40px; font-family: 'Poppins';" placeholder="Password"
+                                v-model="password">
+                            <i class="fas toggle-password" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                                @click="togglePassword"></i>
+                        </div>
 
-                    <div class="form-group position-relative mb-4">
-                        <i class="fas fa-lock icon-input"></i>
-                        <input :type="showConfirmPassword ? 'text' : 'password'" class="form-control pl-5 pr-5"
-                            style="padding-left: 40px; font-family: 'Poppins';" placeholder="Confirm Password"
-                            v-model="confirmPassword">
-                        <i class="fas toggle-password" :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
-                            @click="toggleConfirmPassword"></i>
-                    </div>
-                    <SignButton @click="goToReadList()">Sign Up</SignButton>
-                    <div class="row" style="justify-self: center; padding-top: 20px;">
+                        <div class="form-group position-relative mb-4">
+                            <i class="fas fa-lock icon-input"></i>
+                            <input :type="showConfirmPassword ? 'text' : 'password'" class="form-control pl-5 pr-5"
+                                style="padding-left: 40px; font-family: 'Poppins';" placeholder="Confirm Password"
+                                v-model="confirmPassword">
+                            <i class="fas toggle-password" :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+                                @click="toggleConfirmPassword"></i>
+                        </div>
+                        <SignButton
+                            :disabled="username === '' || password === '' || confirmPassword === '' || (password !== confirmPassword)"
+                            type="submit">Sign Up</SignButton>
+                    </form>
+                    <div class="row" style="justify-self: center; padding-top: 10px;">
                         <span @click="goToSignIn()" class="link">Already have an account</span>
+                    </div>
+                    <div class="row" style="justify-self:center;">
+                        <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
                     </div>
                 </div>
             </div>
@@ -47,7 +55,7 @@
 import SignButton from '@/components/button/signButton.vue';
 
 export default {
-    name: 'SignIn',
+    name: 'SignUp',
     components: { SignButton },
     data() {
         return {
@@ -65,15 +73,45 @@ export default {
         toggleConfirmPassword() {
             this.showConfirmPassword = !this.showConfirmPassword;
         },
-        goToReadList() {
-            this.$router.push("/books");
-        },
         goHome() {
             this.$router.push("/prosepeek");
         },
         goToSignIn() {
             this.$router.push("/signin");
         },
+    },
+    watch: {
+        password() {
+            if (this.password !== this.confirmPassword) {
+                this.errorMessage = "Passwords do not match.";
+                return;
+            } else {
+                this.errorMessage = "";
+            }
+        },
+        confirmPassword() {
+            if (this.password !== this.confirmPassword) {
+                this.errorMessage = "Passwords do not match.";
+                return;
+            } else {
+                this.errorMessage = "";
+            }
+        },
+        formWatcher: {
+            handler(newVal) {
+                const [username, password, confirmPassword] = newVal;
+
+                if (!username || !password || !confirmPassword) {
+                    this.errorMessage = 'Fill in all details correctly.';
+                }
+            },
+            immediate: true
+        }
+    },
+    computed: {
+        formWatcher() {
+            return [this.username, this.password, this.confirmPassword];
+        }
     }
 }
 </script>
@@ -122,5 +160,11 @@ input.form-control {
 .link:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.error-message {
+    color: red;
+    font-size: 11px;
+    font-family: 'Poppins';
 }
 </style>

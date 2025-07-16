@@ -16,6 +16,11 @@
         <MainButton v-if="username === 'guest'" @click="goToSignIn()">Get Started</MainButton>
         <MainButton v-if="username !== 'guest'" @click="signOut()">Sign out</MainButton>
       </div>
+
+      <div v-if="username !== 'guest'" class="d-md-none">
+        <i class="fas fa-sign-out-alt" @click="signOut"
+          style="font-size: 22px; color: var(--orange); cursor: pointer;"></i>
+      </div>
     </div>
   </nav>
 </template>
@@ -38,9 +43,7 @@ export default {
     },
     signOut() {
       sessionStorage.setItem('username', 'guest');
-      // this.$router.push("/prosepeek").then(() => {
-        location.reload();
-      // });
+      location.reload();
     }
   },
   mounted() {

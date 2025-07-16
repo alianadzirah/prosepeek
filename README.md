@@ -13,7 +13,7 @@ Prosepeek is a simple web app that lets users search for books using the Google 
 
 ## Approach
 
-- Frontend built with Vue.js
+- Frontend built with VueJS
 - Integrated with the Google Books API for search results
 
 ## Assumptions

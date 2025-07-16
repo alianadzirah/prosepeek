@@ -9,9 +9,9 @@ import SearchBooks from '../pages/searchBooks.vue'
 import BookDetails from '@/pages/book/bookDetails.vue'
 import ReadList from '@/pages/profile/readList.vue'
 
-Vue.use(Router)
+Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     { path: '/', name: 'MenuPage', component: MenuPage },
@@ -20,6 +20,22 @@ export default new Router({
     { path: '/prosepeek', name: 'MenuPage', component: MenuPage },
     { path: '/books', name: 'SearchBooks', component: SearchBooks },
     { path: '/books/:name/:id', name: 'BookDetails', component: BookDetails, props: true },
-    { path: '/readlist', name: 'ReadList', component: ReadList }
-  ],
-})
+    { path: '/readlist', name: 'ReadList', component: ReadList, meta: { requiresAuth: true } }
+  ]
+});
+
+// Global guard
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const username = sessionStorage.getItem('username');
+    if (username === 'naddechan') {
+      next();
+    } else {
+      next('/');
+    }
+  } else {
+    next();
+  }
+});
+
+export default router;
