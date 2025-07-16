@@ -13,17 +13,21 @@
             <p style="margin: 10px;" v-if="book.volumeInfo.description" v-html="book.volumeInfo.description"></p>
             <MainButton :href="book.volumeInfo.infoLink" target="_blank" style="float: right;">More Info</MainButton>
         </div>
-        <p v-else>Loading...</p>
+        <div v-else class="col" style="justify-items: center;">
+            <LoadingIcon />
+        </div>
+
     </div>
 </template>
 
 <script>
 import { getBookDetail } from '@/components/datastore/bookStore';
-import MainButton from '@/components/button/MainButton.vue';
+import MainButton from '@/components/button/mainButton.vue';
+import LoadingIcon from '@/components/loadingIcon.vue';
 
 export default {
     name: 'BookDetails',
-    components: { MainButton },
+    components: { MainButton, LoadingIcon },
     data() {
         return {
             book: null,
@@ -51,7 +55,8 @@ export default {
 </script>
 
 <style scoped>
-h3, p {
+h3,
+p {
     font-family: 'Poppins';
 }
 </style>

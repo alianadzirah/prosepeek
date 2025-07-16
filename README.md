@@ -13,10 +13,8 @@ Prosepeek is a simple web app that lets users search for books using the Google 
 
 ## Approach
 
-- Frontend built with [your frontend framework]
+- Frontend built with Vue.js
 - Integrated with the Google Books API for search results
-- Authentication system for user sign up/sign in
-- Saved books are tied to the authenticated user
 
 ## Assumptions
 
@@ -28,7 +26,6 @@ Prosepeek is a simple web app that lets users search for books using the Google 
 1. Clone the project:
    ```bash
    git clone https://github.com/alianadzirah/prosepeek.git
-   cd prosepeek
 
 2. Install dependencies:
    npm install
@@ -39,6 +36,12 @@ Prosepeek is a simple web app that lets users search for books using the Google 
 
 4. Start the development server:
    npm run serve
+
+5. Guest user not required sign in details, can directly use the web app
+
+6. Sign in user account for view saved reading list (hardcoded account)
+   username: naddechan
+   password: test123
 
 ## Run Tests
 To run tests using Jest: npx jest

@@ -7,6 +7,9 @@
                     <!-- <i class="fas fa-bookmark bookmark-icon" :class="{ 'text-warning': isBookmarked(book) }"
                     @click="toggleBookmark(book)" style="position: absolute; top: 0; right: 5px; font-size: 30px;"
                     title="Bookmark this book"></i> -->
+                    <i class="fas fa-bookmark bookmark-icon" v-if="username !== 'guest'"
+                    @click="toggleBookmark(book)" style="z-index: 999; position: absolute; top: 0; right: 5px; font-size: 30px;"
+                    title="Bookmark this book"></i>
                     <img :src="book.volumeInfo.imageLinks.thumbnail" class="images img-fluid" alt="Book Thumbnail" />
                 </div>
             </router-link>
@@ -28,10 +31,14 @@ export default {
         },
         isBookmarked: {
             type: Function,
-            required: true
+            required: false
         },
         toggleBookmark: {
             type: Function,
+            required: false
+        },
+        username: {
+            type: String,
             required: true
         }
     }

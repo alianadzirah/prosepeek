@@ -8,8 +8,8 @@
   
   <script>
 import headerHome from '@/components/headerHome.vue'
-  import BodyHome from '@/components/BodyHome.vue';
-  import FooterHome from '@/components/FooterHome.vue';
+  import BodyHome from '@/components/bodyHome.vue';
+  import FooterHome from '@/components/footerHome.vue';
 
   export default {
     name: 'MenuPage',

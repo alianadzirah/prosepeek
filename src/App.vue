@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import NavigationBar from './components/NavigationBar.vue'
+import NavigationBar from './components/navigationBar.vue'
 
 export default {
   name: 'App',
@@ -14,7 +14,6 @@ export default {
   computed: {
     showNavigationBar() {
       const routes = ['/signin', '/signup']
-      console.log(!routes.includes(this.$route.path))
       return !routes.includes(this.$route.path)
     }
   }

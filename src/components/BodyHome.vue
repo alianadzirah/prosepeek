@@ -15,7 +15,7 @@
         </div>
         <div v-else class="row">
             <div class="col-md-3 mb-3 col-sm-4" v-for="book in latestBooks" :key="book.id">
-                <BookCard :book="book" :isBookmarked="isBookmarked" :toggleBookmark="toggleBookmark" />
+                <BookCard :book="book" :username="username"/>
             </div>
         </div>
         <div class="container-fluid" style="padding-top: 50px;">
@@ -33,7 +33,7 @@
         </div>
         <div v-else class="row">
             <div class="col-md-3 mb-3 col-sm-4" v-for="book in trendingBooks" :key="book.id">
-                <BookCard :book="book" :isBookmarked="isBookmarked" :toggleBookmark="toggleBookmark" />
+                <BookCard :book="book" :username="username"/>
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
 
 <script>
 import { getLatestBook, getTrendingBook } from './datastore/bookStore';
-import BookCard from './BookCard.vue';
+import BookCard from './bookCard.vue';
 import LoadingIcon from './loadingIcon.vue';
 
 export default {
@@ -55,6 +55,7 @@ export default {
             trendingBooks: [],
             trendingError: '',
             trendingLoading: false,
+            username: sessionStorage.getItem('username') === null || sessionStorage.getItem('username') === 'guest' ? 'guest' : sessionStorage.getItem('username')
         };
     },
     methods: {

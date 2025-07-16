@@ -2,7 +2,7 @@
   <nav class="navi">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <router-link to="/" exact-active-class="active"> <img :src="require('@/assets/images/open-book.png')"
-          alt="Vue logo" width="50" /> 
+          alt="Vue logo" width="50" />
       </router-link>
 
       <div class="navbar-links d-none d-md-flex gap-5"
@@ -13,7 +13,8 @@
           rel="noopener noreferrer">
           Contact
         </a>
-        <MainButton @click="goToSignIn()">Get Started</MainButton>
+        <MainButton v-if="username === 'guest'" @click="goToSignIn()">Get Started</MainButton>
+        <MainButton v-if="username !== 'guest'" @click="signOut()">Sign out</MainButton>
       </div>
     </div>
   </nav>
@@ -21,16 +22,28 @@
 
 
 <script>
-import MainButton from './button/MainButton.vue';
+import MainButton from './button/mainButton.vue';
 
 export default {
   name: 'NavigationBar',
   components: { MainButton },
-
+  data() {
+    return {
+      username: sessionStorage.getItem('username') === null || sessionStorage.getItem('username') === 'guest' ? 'guest' : sessionStorage.getItem('username')
+    }
+  },
   methods: {
     goToSignIn() {
       this.$router.push("/signin");
     },
+    signOut() {
+      sessionStorage.setItem('username', 'guest');
+      // this.$router.push("/prosepeek").then(() => {
+        location.reload();
+      // });
+    }
+  },
+  mounted() {
   }
 }
 </script>

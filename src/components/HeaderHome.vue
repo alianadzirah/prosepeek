@@ -2,19 +2,19 @@
     <div class="navi">
         <div class="container-fluid">
             <div class="row" style="align-items: center;">
-                <div class="col-2"></div>
-                <div class="col-4">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-4 col-md-6">
                     <h1 class="text-3xl font-bold">Welcome to Prosepeek!</h1>
                     <p style="color: var(--lightgray);">Browse trending and popular book here.</p>
                     <div class="row gap-3" style="margin-left: 1px">
                         <MainButton @click="viewBooks()">Find Books &#x2192;</MainButton>
-                        <SubButton @click="goToReadList()">Read list</SubButton>
+                        <SubButton @click="username === 'guest' ?  goToSignIn() : goToReadList()">Read list</SubButton>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-lg-4 col-md-6 d-none d-md-block">
                     <img :src="require('@/assets/images/open-book.png')" alt="Prosepeek" width="80%" />
                 </div>
-                <div class="col-2"></div>
+                <div class="col-lg-2"></div>
             </div>
         </div>
     </div>
@@ -22,20 +22,30 @@
 
 
 <script>
-import MainButton from './button/MainButton.vue'
-import SubButton from './button/SubButton.vue'
+import MainButton from './button/mainButton.vue'
+import SubButton from './button/subButton.vue'
 
 export default {
     name: 'headerHome',
     components: { MainButton, SubButton },
-
+    data() {
+        return {
+            username: 'guest'
+        }
+    },
     methods: {
         viewBooks() {
             this.$router.push("/books");
         },
         goToReadList() {
+            this.$router.push("/readlist");
+        },
+        goToSignIn() {
             this.$router.push("/signin");
         },
+    },
+    mounted() {
+        this.username = sessionStorage.getItem('username')
     }
 }
 </script>
