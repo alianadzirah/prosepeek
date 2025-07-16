@@ -1,22 +1,35 @@
 <template>
   <div class="container py-4">
     <div class="form-group mb-4">
-      <div class="input-group">
-        <input v-model="query" @keyup.enter="getBookList(0)" class="form-control" style="font-family: 'Poppins'; padding: 15px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;"
+      <div class="input-group mb-2">
+        <input v-model="query" @keyup.enter="getBookList(0)" class="form-control"
+          style="font-family: 'Poppins'; padding: 15px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;"
           placeholder="Search books..." />
-        <button @click="getBookList(0)" class="btn btn-primary" style="padding: 15px; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
+        <button @click="getBookList(0)" class="btn btn-primary"
+          style="padding: 15px; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
           <i class="fas fa-search me-1"></i> Search
         </button>
+        &nbsp;
+        &nbsp;
+        <div class="form-group mt-2 position-relative d-flex align-items-center gap-2">
+          <i class="fas fa-sliders-h" @click="showDropdown = !showDropdown"
+            style="cursor: pointer; font-size: 30px;"></i>
+          <div v-if="showDropdown" class="dropdown-menu show p-0"
+            style="position: absolute; top: 100%; right: 0; z-index: 1000; font-family: 'Poppins'; min-width: 120px;">
+            <button class="dropdown-item" @click="selectSearchBy('title')">Title</button>
+            <button class="dropdown-item" @click="selectSearchBy('author')">Author</button>
+            <button class="dropdown-item" @click="selectSearchBy('genre')">Genre</button>
+          </div>
+        </div>
       </div>
     </div>
-
 
     <div v-if="loading" class="row" style="justify-self: center;">
       <LoadingIcon />
     </div>
     <div v-else class="row">
       <div class="col-md-3 mb-3 col-sm-4" v-for="book in books" :key="book.id">
-        <BookCard :book="book" :username="username"/>
+        <BookCard :book="book" />
       </div>
     </div>
     <div
@@ -60,6 +73,7 @@ export default {
   data() {
     return {
       query: '',
+      searchBy: 'title',
       books: [],
       savedBooks: [],
       startIndex: 0,
@@ -67,7 +81,8 @@ export default {
       totalItems: 0,
       error: '',
       loading: false,
-      username: sessionStorage.getItem('username') === null || sessionStorage.getItem('username') === 'guest' ? 'guest' : sessionStorage.getItem('username')
+      username: sessionStorage.getItem('username') === null || sessionStorage.getItem('username') === 'guest' ? 'guest' : sessionStorage.getItem('username'),
+      showDropdown: false
     };
   },
   computed: {
@@ -79,30 +94,14 @@ export default {
     },
   },
   methods: {
+    selectSearchBy(option) {
+      this.searchBy = option;
+      this.showDropdown = false;
+    },
     onMaxResultsChange() {
       this.$nextTick(() => {
         this.getBookList(0);
       });
-    }
-    ,
-    toggleBookmark(book) {
-      const index = this.savedBooks.findIndex(saved => saved.id === book.id);
-      if (index !== -1) {
-        this.savedBooks.splice(index, 1);
-      } else {
-        this.savedBooks.push(book);
-      }
-      localStorage.setItem('savedBooks', JSON.stringify(this.savedBooks));
-    },
-    isBookmarked(book) {
-      return this.savedBooks.some(saved => saved.id === book.id);
-    },
-
-    loadBookmarks() {
-      const saved = localStorage.getItem('savedBooks');
-      if (saved) {
-        this.savedBooks = JSON.parse(saved);
-      }
     },
     viewBooks() {
       this.$router.push("/books");
@@ -110,11 +109,9 @@ export default {
     async getBookList(start = 0) {
       this.loading = true;
       try {
-        const token = this.authToken;
         const term = this.query.trim() || 'a';
 
         const result = await getBookList({
-          token,
           query: term,
           start,
           maxResults: this.maxResults,

@@ -29,6 +29,12 @@
  * @returns {Promise<{ books: GoogleBook[], error: string }>}
  */
 
+/**
+ * Fetch the trending books using Google Books API
+ * 
+ * @returns {Promise<{ books: GoogleBook[], error: string }>}
+ */
+
 export const getBookList = async ({ query = '', start = 0, maxResults = 8 }) => {
     try {
         const term = query.trim() || '';
