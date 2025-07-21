@@ -9,6 +9,7 @@
         style="justify-items: center; justify-content: center; align-items: center; align-content: center;">
         <router-link to="/" exact-active-class="active" class="nav-link">Home</router-link>
         <router-link to="/books" active-class="active" class="nav-link">Book</router-link>
+        <router-link v-if="username !== 'guest'" to="/readlist" active-class="active" class="nav-link">Read List</router-link>
         <a class="nav-link" href="mailto:aliaanadzirahh00@gmail.com?subject=Prosepeek%20Review" target="_blank"
           rel="noopener noreferrer">
           Contact

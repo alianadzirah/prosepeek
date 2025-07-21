@@ -6,6 +6,9 @@
                 <div class="image-box" v-if="book.volumeInfo.imageLinks?.thumbnail">
                     <img :src="book.volumeInfo.imageLinks.thumbnail" class="images img-fluid" alt="Book Thumbnail" />
                 </div>
+                <div class="image-box" v-else-if="book.volumeInfo.imageLinks?.thumbnail == '' || book.volumeInfo.imageLinks?.thumbnail == null">
+                    <img :src="require('@/assets/images/no-image.jpg')" class="images img-fluid" alt="Book Thumbnail" />
+                </div>
             </router-link>
             <h5 class="card-title">{{ book.volumeInfo.title }}</h5>
             <p class="card-text" v-if="book.volumeInfo.authors">
@@ -77,7 +80,12 @@ export default {
 }
 
 .image-box {
+    justify-self: center;
     position: relative;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    align-content: center;
     padding: 20px;
     background-color: var(--oat);
     transition: background-color 0.6s ease;

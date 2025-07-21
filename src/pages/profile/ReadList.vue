@@ -13,6 +13,8 @@
             <p v-if="books.length === 0">
                 no reading list yet...
             </p>
+            <router-link v-if="books.length === 0" to="/books" class="link">Add Book
+                +</router-link>
         </div>
     </div>
 </template>
@@ -68,6 +70,13 @@ export default {
 h2 {
     color: var(--orange);
     font-family: 'Poppins';
+}
+
+.link {
+    font-family: 'Poppins';
+    color: var(--orange);
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .btn.btn-primary {
